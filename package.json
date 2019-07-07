@@ -1,0 +1,23 @@
+{
+  "name": "mongo-stream-demo",
+  "version": "1.0.0",
+  "description": "an ideal way to read large mongo collection into memory",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ambukesh009/mongo-stream-demo.git"
+  },
+  "author": "Ambukesh",
+  "bugs": {
+    "url": "https://github.com/ambukesh009/mongo-stream-demo/issues"
+  },
+  "homepage": "https://github.com/ambukesh009/mongo-stream-demo#readme",
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "^3.2.7"
+  }
+}
