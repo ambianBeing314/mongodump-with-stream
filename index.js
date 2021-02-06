@@ -8,7 +8,7 @@ const collectionName = "trades";
 
 const client = new MongoClient(url, { useNewUrlParser: true });
 
-(async function() {
+(async function () {
   try {
     await client.connect();
     console.info("Connected to mongo server correctly!");
@@ -18,14 +18,16 @@ const client = new MongoClient(url, { useNewUrlParser: true });
     doCollectionClone(client, db, col);
     // doCollectionCloneTwo(client, db, col);
   } catch (error) {
-    console.error("CONNECTION ERROR::", error.stack);
+    console.error(`Connection error::${error}`);
   }
 })();
 
-//RIGHT WAY
-//takes around 403MB of memeory and completes in ~18secs for 1 Million records
-//Ofcourse the memory cosumption is still large because we have to keep interval-data in memory
-//For writable srteam like (write data to file) stream.pipe(writable) would do magic & memory consumption would not go beyond 150MB
+/**
+ * Reading data using streams and dumping into mongodb
+ * @param {Object} client - client instance for mongodb connection.
+ * @param {Object} db - database instance to use.
+ * @param {string} col - collection name.
+ */
 function doCollectionClone(client, db, col) {
   console.time("CLONING");
 
@@ -34,11 +36,11 @@ function doCollectionClone(client, db, col) {
   let bulkOp = [];
   let bulkOpPromises = [];
 
-  stream.on("data", function(data) {
+  stream.on("data", function (data) {
     bulkOp.push({
       insertOne: {
-        document: data
-      }
+        document: data,
+      },
     });
     if (bulkOp.length > 8000) {
       const p = newCol.bulkWrite(bulkOp, { ordered: false, w: 1 });
@@ -47,11 +49,11 @@ function doCollectionClone(client, db, col) {
     }
   });
 
-  stream.on("error", function(error) {
-    console.log("STREAM ERROR::", error.stack);
+  stream.on("error", function (error) {
+    console.log(`stream error::${error}`);
   });
 
-  stream.on("end", function() {
+  stream.on("end", function () {
     console.log("FINISHED");
     if (bulkOp.length > 0) {
       const p = newCol.bulkWrite(bulkOp, { ordered: false, w: 1 });
@@ -60,37 +62,38 @@ function doCollectionClone(client, db, col) {
     }
 
     Promise.all(bulkOpPromises)
-      .then(res => {
+      .then((res) => {
         client.close();
         console.timeEnd("CLONING");
       })
-      .catch(e => {
-        console.error("BULK INSERT ERROR::", e);
+      .catch((e) => {
+        console.error(`bluk insert error::${e}`);
         client.close();
       });
   });
 }
 
-//NOT SO RIGHT FOR LARGE COLLECTIONS
-//takes a whopping 1.5Gigs of memory and completes in ~35secs for 1 Million records
-//Had this memory reached > 1.6 you'll get a nice-long error JS heap out of memory and app will crash
+/**
+ *
+ * @param {Object} client - client instance for mongodb connection.
+ * @param {Object} db - database instance to use.
+ * @param {string} col - collection name.
+ */
 async function doCollectionCloneTwo(client, db, col) {
   console.time("CLONING");
   try {
-    //1.Get clone collection
     const newCol = db.collection("tradesClone");
 
-    //2.Get the docs and do bulk
     const docs = await col.find({}).toArray();
     const len = docs.length;
     const p = await newCol.insertMany(docs, { w: 1 });
 
     //3.Check and close
-    assert.equal(len, p.insertedCount);
+    assert.strictEqual(len, p.insertedCount);
     client.close();
     console.timeEnd("CLONING");
   } catch (error) {
-    console.error("AT doCollectionCloneTwo()::", error);
+    console.error(`Error at doCollectionCloneTwo()::${error}`);
     client.close();
   }
 }

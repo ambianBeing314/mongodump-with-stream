@@ -1,7 +1,7 @@
 {
-  "name": "mongo-stream-demo",
+  "name": "mongodump-with-stream",
   "version": "1.0.0",
-  "description": "an ideal way to read large mongo collection into memory",
+  "description": "a small benchmark and code to show how to read and dump large records in mongodb using stream",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ambukesh009/mongo-stream-demo.git"
+    "url": "https://github.com/ambianBeing/mongodump-with-stream.git"
   },
-  "author": "Ambukesh",
+  "author": "ambianBeing",
   "bugs": {
-    "url": "https://github.com/ambukesh009/mongo-stream-demo/issues"
+    "url": "https://github.com/ambianBeing/mongodump-with-stream/issues"
   },
-  "homepage": "https://github.com/ambukesh009/mongo-stream-demo#readme",
+  "homepage": "https://github.com/ambianBeing/mongodump-with-stream#readme",
   "license": "ISC",
   "dependencies": {
-    "mongodb": "^3.2.7"
+    "mongodb": "^3.6.4"
   }
 }
