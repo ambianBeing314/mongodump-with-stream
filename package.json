@@ -18,6 +18,6 @@
   "homepage": "https://github.com/ambianBeing/mongodump-with-stream#readme",
   "license": "ISC",
   "dependencies": {
-    "mongodb": "^3.6.4"
+    "mongodb": "^3.7.4"
   }
 }
